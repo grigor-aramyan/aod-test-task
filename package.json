@@ -4,7 +4,9 @@
   "description": "Test task for AOD.Space",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev-start": "concurrently \"npm run dev-bundle\" \"npm run dev-server\"",
+    "dev-bundle": "webpack -wd",
+    "dev-server": "nodemon --exec babel-node src/server/server.js --ignore dist/"
   },
   "repository": {
     "type": "git",
@@ -15,5 +17,34 @@
   "bugs": {
     "url": "https://github.com/grigor-aramyan/aod-test-task/issues"
   },
-  "homepage": "https://github.com/grigor-aramyan/aod-test-task#readme"
+  "homepage": "https://github.com/grigor-aramyan/aod-test-task#readme",
+  "dependencies": {
+    "@babel/core": "^7.6.2",
+    "@babel/node": "^7.6.2",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/preset-env": "^7.6.2",
+    "@babel/preset-react": "^7.0.0",
+    "axios": "^0.19.0",
+    "babel-loader": "^8.0.6",
+    "bcryptjs": "^2.4.3",
+    "config": "^3.2.2",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "react": "^16.10.1",
+    "react-dom": "^16.10.1",
+    "react-redux": "^7.1.1",
+    "react-router-dom": "^5.1.1",
+    "redux": "^4.0.4",
+    "redux-thunk": "^2.3.0",
+    "webpack": "^4.41.0",
+    "webpack-cli": "^3.3.9"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.3",
+    "concurrently": "^4.1.2",
+    "eslint": "^6.5.0",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^2.1.1",
+    "nodemon": "^1.19.3"
+  }
 }
