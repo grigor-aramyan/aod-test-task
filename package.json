@@ -1,0 +1,19 @@
+{
+  "name": "aod_test_task",
+  "version": "1.0.0",
+  "description": "Test task for AOD.Space",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grigor-aramyan/aod-test-task.git"
+  },
+  "author": "Grigori Aramyan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/grigor-aramyan/aod-test-task/issues"
+  },
+  "homepage": "https://github.com/grigor-aramyan/aod-test-task#readme"
+}
