@@ -1,4 +1,7 @@
 import express from 'express';
+//import { Server } from 'http';
+import http from 'http';
+import socket from 'socket.io';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
@@ -12,10 +15,15 @@ import App from '../components/App';
 
 const PORT = process.env.PORT || 4242;
 
-const server = express();
+const app = express();
 
-server.use(express.json());
-server.use(express.static('dist'));
+app.use(express.json());
+app.use(express.static('dist'));
+
+const server = http.createServer(app);
+//const server = new Server(app);
+
+const io = socket(server);
 
 // Routes
 import authRoutes from './routes/authRoutes';
@@ -39,7 +47,7 @@ server.get('/:i', (req, res) => {
     });
 });*/
 
-server.get('/*', (req, res) => {
+app.get('/*', (req, res) => {
     const store = createStore(reducers);
 
     const initialMarkup = ReactDOMServer.renderToString(
@@ -63,6 +71,10 @@ server.get('/*', (req, res) => {
             <body>
                 <div id="root">${initialMarkup}</div>
                 <script src="/main.js"></script>
+                <script src="/socket.io/socket.io.js"></script>
+                <script>
+                    var socket = io();
+                </script>
             </body>
         </html>
     `);
@@ -72,6 +84,19 @@ pool.connect((err, client, release) => {
     if (err) return console.log(err);
 
     server.listen(PORT, () => console.log(`server listening on port ${PORT}`));
+    //server.listen(PORT, () => console.log(`server listening on port ${PORT}`));
+
+    io.on('connection', (sock) => {
+        console.log('socket connected!');
+
+        sock.on('client test', data => {
+            console.log(`from client msg: ${data.msg}`);
+        });
+
+        setInterval(() => {
+            sock.emit('test', { msg: 'some string' });
+        }, 10 * 1000);
+    });
 });
 
 process.on('SIGINT', () => {
