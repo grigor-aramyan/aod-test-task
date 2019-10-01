@@ -5,6 +5,7 @@ import { StaticRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import reducers from '../reducers';
+import { query, pool, createJunkTable } from '../db';
 
 // components
 import App from '../components/App';
@@ -18,6 +19,25 @@ server.use(express.static('dist'));
 
 // Routes
 import authRoutes from './routes/authRoutes';
+
+/*server.get('/test', (req, res) => {
+    //createJunkTable();
+    //res.json({ msg: 'done' });
+    
+    query('INSERT INTO users(name) VALUES($1) RETURNING *', ['jane'], (err, result) => {
+        if (err) return res.status(400).json({ msg: JSON.stringify(err) });
+
+        return res.status(200).json({ user: result.rows[0] });
+    });
+});
+
+server.get('/:i', (req, res) => {
+    query('SELECT * FROM users WHERE id=$1', [req.params.i], (err, result) => {
+        if (err) return res.status(400).json({ msg: JSON.stringify(err) });
+
+        res.status(200).json({ msg: result.rows[0] });
+    });
+});*/
 
 server.get('/*', (req, res) => {
     const store = createStore(reducers);
@@ -48,5 +68,13 @@ server.get('/*', (req, res) => {
     `);
 });
 
+pool.connect((err, client, release) => {
+    if (err) return console.log(err);
 
-server.listen(PORT, () => console.log(`server listening on port ${PORT}`));
+    server.listen(PORT, () => console.log(`server listening on port ${PORT}`));
+});
+
+process.on('SIGINT', () => {
+    pool.end();
+    process.exit();
+});
