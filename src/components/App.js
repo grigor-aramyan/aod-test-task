@@ -13,8 +13,9 @@ import {
     loadUser
     } from '../actions/authActions';
 
-
 // Components
+import LoginView from './LoginView';
+import RegisterView from './RegisterView';
 
 class App extends Component {
     componentDidMount() {
@@ -29,7 +30,21 @@ class App extends Component {
         this.props.loadUser();*/
     }
 
+    state = {
+        loginVisible: true
+    }
+
+    switchToRegisterView = () => {
+        this.setState({
+            loginVisible: false
+        });
+    }
+
     render() {
+
+        const {
+            loginVisible
+        } = this.state;
 
         return(
             <Container
@@ -37,7 +52,11 @@ class App extends Component {
                     textAlign: 'center',
                     marginTop: '10vh'
                 }}>
-                main content will go here!
+                { loginVisible ?
+                    <LoginView
+                        switchToRegisterView={this.switchToRegisterView} />
+                : <RegisterView />
+                }
             </Container>
         );
     }
