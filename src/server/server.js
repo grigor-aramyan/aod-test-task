@@ -62,19 +62,14 @@ app.get('/*', (req, res) => {
         <html>
             <head>
                 <title>AOD Space Test Task</title>
-                <link rel="stylesheet"
-                    href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-                    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-                    crossorigin="anonymous">
                 <link rel="stylesheet" href="/css/styles.css">
+                <link rel="stylesheet"
+                    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
             </head>
             <body>
                 <div id="root">${initialMarkup}</div>
                 <script src="/main.js"></script>
                 <script src="/socket.io/socket.io.js"></script>
-                <script>
-                    var socket = io();
-                </script>
             </body>
         </html>
     `);
@@ -89,13 +84,13 @@ pool.connect((err, client, release) => {
     io.on('connection', (sock) => {
         console.log('socket connected!');
 
-        sock.on('client test', data => {
+        /*sock.on('client test', data => {
             console.log(`from client msg: ${data.msg}`);
         });
 
         setInterval(() => {
             sock.emit('test', { msg: 'some string' });
-        }, 10 * 1000);
+        }, 10 * 1000);*/
     });
 });
 
