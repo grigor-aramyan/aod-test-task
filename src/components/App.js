@@ -14,9 +14,6 @@ import {
     } from '../actions/authActions';
 
 
-export const baseUri = 'http://localhost:4242';
-
-
 // Components
 
 class App extends Component {
