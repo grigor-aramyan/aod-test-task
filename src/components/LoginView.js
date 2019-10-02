@@ -64,7 +64,7 @@ class LoginView extends Component {
                     password: pmPassword
                 };
 
-                
+
             }
         } else {
             if (!adminUsername || !adminPassword) {
@@ -94,7 +94,8 @@ class LoginView extends Component {
             pmUsername,
             pmPassword,
             adminUsername,
-            adminPassword
+            adminPassword,
+            loginError
         } = this.state;
 
         let usernameFieldName = null;
@@ -133,15 +134,6 @@ class LoginView extends Component {
             passwordFieldValue = adminPassword;
         }
 
-        let userTypeName = '';
-        if (userType === DEV_TYPE) {
-            userTypeName = 'Developer';
-        } else if (userType === PM_TYPE) {
-            userTypeName = 'Manager';
-        } else {
-            userTypeName = 'Admin';
-        }
-
         return(
             <Container
                 style={{
@@ -153,6 +145,7 @@ class LoginView extends Component {
                     label="Username"
                     value={usernameFieldValue}
                     onChange={this.onChange}
+                    required
                     margin="normal"
                     style={{
                         width: '20vw'
@@ -163,6 +156,8 @@ class LoginView extends Component {
                     label="Password"
                     value={passwordFieldValue}
                     onChange={this.onChange}
+                    type='password'
+                    required
                     style={{
                         width: '20vw'
                     }}
@@ -184,6 +179,16 @@ class LoginView extends Component {
                                 Register
                         </a>
                 </div>
+                { loginError ?
+                    <p
+                        style={{
+                            color: 'red',
+                            fontStyle: 'italic'
+                        }}>
+                        { loginError }
+                    </p>
+                : null
+                }
                 <div>
                     <Button
                         onClick={this.onLogin}
