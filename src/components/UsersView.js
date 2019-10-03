@@ -29,14 +29,7 @@ class UsersView extends Component {
     }
 
     componentDidUpdate() {
-        const {
-            currentUser,
-            isAuthenticated
-        } = this.props;
-
-        if (isAuthenticated && currentUser && (currentUser.userType === DEV_TYPE || currentUser.userType === PM_TYPE)) {
-            window.open('/dashboard', '_self');
-        }
+        
     }
 
     render() {
