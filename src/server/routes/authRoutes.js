@@ -62,15 +62,18 @@ router.post('/', function(req, res) {
 // @desc Get user data
 // @access Private
 router.get('/user', auth, function(req, res) {
-    User.findById(req.user.id)
-        .select('-password')
-        .then(user => res.json({
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            telephone: user.telephone,
-            userType: user.userType
-        }));
+    User.findOne({
+        where: {
+            id: req.user.id
+        }
+    })
+    .then(user => res.json({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        telephone: user.telephone,
+        userType: user.userType
+    }));
 });
 
 export default router;

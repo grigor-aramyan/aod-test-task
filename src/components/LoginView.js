@@ -17,7 +17,25 @@ import {
     ADMIN_TYPE
 } from '../utils/statics';
 
+// Actions
+import {
+    loginInit,
+    loadLocalToken,
+    loadUser
+} from '../actions/authActions';
+
 class LoginView extends Component {
+    componentDidMount() {
+        this.props.loadLocalToken();
+        this.props.loadUser();
+    }
+
+    componentDidUpdate() {
+        if (this.props.currentUser) {
+            window.open('/dashboard', '_self');
+        }
+    }
+
     state = {
         userType: DEV_TYPE,
         devUsername: '',
@@ -51,7 +69,7 @@ class LoginView extends Component {
                     password: devPassword
                 };
 
-
+                this.props.loginInit(body);
             }
         } else if (userType == PM_TYPE) {
             if (!pmUsername || !pmPassword) {
@@ -64,7 +82,7 @@ class LoginView extends Component {
                     password: pmPassword
                 };
 
-
+                this.props.loginInit(body);
             }
         } else {
             if (!adminUsername || !adminPassword) {
@@ -77,7 +95,7 @@ class LoginView extends Component {
                     password: adminPassword
                 };
 
-
+                this.props.loginInit(body);
             }
         }
     }
@@ -214,13 +232,19 @@ class LoginView extends Component {
 }
 
 LoginView.propTypes = {
-    switchToRegisterView: PropTypes.func.isRequired
+    switchToRegisterView: PropTypes.func.isRequired,
+    loginInit: PropTypes.func.isRequired,
+    loadLocalToken: PropTypes.func.isRequired,
+    loadUser: PropTypes.func.isRequired,
+    currentUser: PropTypes.object
 }
 
 const mapStateToProps = (state) => ({
-
+    currentUser: state.auth.user
 });
 
 export default connect(mapStateToProps, {
-
+    loginInit,
+    loadLocalToken,
+    loadUser
 })(LoginView);

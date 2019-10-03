@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import store from './store';
 
 import App from './components/App';
+import DashboardView from './components/DashboardView';
 
 ReactDOM.hydrate(
     <Provider store={store}>
@@ -12,6 +13,7 @@ ReactDOM.hydrate(
             <Route path='/'>
                 <Switch>
                     <Route exact path='/' component={App} />
+                    <Route path='/dashboard' component={DashboardView} />
                     <Route path='/*' render={ () => {
                         return(
                             <div>

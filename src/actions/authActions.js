@@ -10,15 +10,14 @@ import {
     LOAD_LOCAL_TOKEN
 } from './types';
 
-// Constants
-export const baseUri = 'http://localhost:4242';
+import { baseUri } from '../utils/statics';
 
 const API_URI = baseUri + '/api';
 
-export const loginInit = ({ email, password }) => (dispatch, getState) => {
+export const loginInit = ({ username, password }) => (dispatch, getState) => {
     dispatch({ type: USER_LOADING });
 
-    const body = { email, password };
+    const body = { username, password };
 
     const uri = `${API_URI}/auth`;
 

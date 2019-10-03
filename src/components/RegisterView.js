@@ -16,9 +16,18 @@ import {
     ADMIN_TYPE
 } from '../utils/statics';
 
-class RegisterView extends Component {
+import {
+    createUser
+} from '../actions/userActions';
 
-    state ={
+class RegisterView extends Component {
+    componentDidUpdate() {
+        if (this.props.currentUser) {
+            window.open('/dashboard', '_self');
+        }
+    }
+
+    state = {
         userType: DEV_TYPE,
         devUsername: '',
         devPassword: '',
@@ -66,10 +75,11 @@ class RegisterView extends Component {
                     username: devUsername,
                     password: devPassword,
                     email: devEmail,
-                    telephone: devTelephone
+                    telephone: devTelephone,
+                    userType: DEV_TYPE
                 };
 
-
+                this.props.createUser(body);
             }
         } else if (userType == PM_TYPE) {
             if (!pmUsername || !pmPassword || !pmEmail) {
@@ -85,10 +95,11 @@ class RegisterView extends Component {
                     username: pmUsername,
                     password: pmPassword,
                     email: pmEmail,
-                    telephone: pmTelephone
+                    telephone: pmTelephone,
+                    userType: PM_TYPE
                 };
 
-
+                this.props.createUser(body);
             }
         } else {
             if (!adminUsername || !adminPassword || !adminEmail) {
@@ -104,10 +115,11 @@ class RegisterView extends Component {
                     username: adminUsername,
                     password: adminPassword,
                     email: adminEmail,
-                    telephone: adminTelephone
+                    telephone: adminTelephone,
+                    userType: ADMIN_TYPE
                 };
 
-
+                this.props.createUser(body);
             }
         }
     }
@@ -290,13 +302,14 @@ class RegisterView extends Component {
 }
 
 RegisterView.propTypes = {
-
+    createUser: PropTypes.func.isRequired,
+    currentUser: PropTypes.object
 }
 
 const mapStateToProps = (state) => ({
-
+    currentUser: state.auth.user
 });
 
 export default connect(mapStateToProps, {
-
+    createUser
 })(RegisterView);

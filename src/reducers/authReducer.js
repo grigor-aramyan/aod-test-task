@@ -5,7 +5,8 @@ import {
     LOGIN_FAIL,
     LOGIN_SUCCESS,
     LOGOUT_SUCCESS,
-    LOAD_LOCAL_TOKEN
+    LOAD_LOCAL_TOKEN,
+    USER_CREATED
 } from '../actions/types';
 
 const initialState = {
@@ -28,6 +29,7 @@ export default function(state = initialState, action) {
                 isAuthenticated: null,
                 isLoading: false
             };
+        case USER_CREATED:
         case LOGIN_SUCCESS:
             localStorage.setItem('gl_token', action.payload.token);
 
