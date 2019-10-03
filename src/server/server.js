@@ -12,6 +12,9 @@ import { sequelize, User } from './sequelize';
 // components
 import App from '../components/App';
 
+// Router
+import authRoutes from './routes/authRoutes';
+
 const PORT = process.env.PORT || 4242;
 
 const app = express();
@@ -25,7 +28,28 @@ const server = http.createServer(app);
 const io = socket(server);
 
 // Routes
-import authRoutes from './routes/authRoutes';
+app.use('/api/auth', authRoutes)
+
+app.get('/3', (req, res) => {
+    const params = {
+        username: 'john',
+        email: 'mail@gmail.com',
+        telephone: '333',
+        userType: 'admin'
+    }
+    
+    User.create(params)
+        .then(newUser => {
+            res.status(201).json({
+                newUser
+            });
+        })
+        .catch(err => {
+            res.status(400).json({
+                err
+            })
+        });
+})
 
 app.get('/*', (req, res) => {
     const store = createStore(reducers);
@@ -60,6 +84,8 @@ sequelize
     .then(() => {
         console.log('db connected');
 
+        // TODO use migrations in prod to add ongoing changes to db tables...
+        // ... w/o dropping them and removing already gathered data
         sequelize.sync()
             .then(() => {
                 console.log('synced successfully');
