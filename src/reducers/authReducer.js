@@ -27,7 +27,8 @@ export default function(state = initialState, action) {
                 ...state,
                 token: '',
                 isAuthenticated: null,
-                isLoading: false
+                isLoading: false,
+                user: null
             };
         case USER_CREATED:
         case LOGIN_SUCCESS:

@@ -6,6 +6,9 @@ import store from './store';
 
 import App from './components/App';
 import DashboardView from './components/DashboardView';
+import ReportsView from './components/ReportsView';
+import UsersView from './components/UsersView';
+import NotifsView from './components/NotifsView';
 
 ReactDOM.hydrate(
     <Provider store={store}>
@@ -14,6 +17,9 @@ ReactDOM.hydrate(
                 <Switch>
                     <Route exact path='/' component={App} />
                     <Route path='/dashboard' component={DashboardView} />
+                    <Route path='/reports' component={ReportsView} />
+                    <Route path='/notifs' component={NotifsView} />
+                    <Route path='/users' component={UsersView} />
                     <Route path='/*' render={ () => {
                         return(
                             <div>

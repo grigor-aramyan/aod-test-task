@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
-    Container
+    Container,
+    Button
 } from '@material-ui/core';
 
 // Statics
@@ -27,14 +28,32 @@ class DashboardView extends Component {
 
     render() {
         const {
-            currentUser
+            currentUser,
+            isAuthenticated
         } = this.props;
 
         return(
             <Container>
-                { currentUser ?
-                    <div>
-                        username: { currentUser.username}
+                { (isAuthenticated && currentUser) ?
+                    <div
+                        style={{
+                            textAlign: 'center'
+                        }}>
+                        <h3>Welcome { currentUser ? currentUser.username : '' } to most awesome admin panel ))</h3>
+                        <hr />
+                        <Button
+                            onClick={() => window.open('/notifs', '_self')}>Notifications</Button>
+                        <br />
+                        <Button
+                            onClick={() => window.open('/reports', '_self')}>Reports</Button>
+                        { currentUser.userType === ADMIN_TYPE ?
+                            <div>
+                                <br />
+                                <Button
+                                    onClick={() => window.open('/users', '_self')}>Users</Button>
+                            </div>
+                        : null
+                        }
                     </div>
                 : <NotAuthenticatedView />
                 }
@@ -46,11 +65,13 @@ class DashboardView extends Component {
 DashboardView.propTypes = {
     loadLocalToken: PropTypes.func.isRequired,
     loadUser: PropTypes.func.isRequired,
-    currentUser: PropTypes.object
+    currentUser: PropTypes.object,
+    isAuthenticated: PropTypes.bool
 }
 
 const mapStateToProps = (state) => ({
-    currentUser: state.auth.user
+    currentUser: state.auth.user,
+    isAuthenticated: state.auth.isAuthenticated
 });
 
 export default connect(mapStateToProps, {
