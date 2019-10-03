@@ -14,6 +14,7 @@ import App from '../components/App';
 
 // Router
 import authRoutes from './routes/authRoutes';
+import userRoutes from './routes/userRoutes';
 
 const PORT = process.env.PORT || 4242;
 
@@ -28,7 +29,8 @@ const server = http.createServer(app);
 const io = socket(server);
 
 // Routes
-app.use('/api/auth', authRoutes)
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 
 app.get('/3', (req, res) => {
     const params = {

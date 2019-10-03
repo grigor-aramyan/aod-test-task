@@ -22,8 +22,7 @@ router.post('/', function(req, res) {
 
     User.findOne({
         where: {
-            username,
-            password
+            username
         }
     })
     .then(user => {
