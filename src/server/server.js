@@ -1,5 +1,4 @@
 import express from 'express';
-//import { Server } from 'http';
 import http from 'http';
 import socket from 'socket.io';
 import React from 'react';
@@ -8,7 +7,7 @@ import { StaticRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import reducers from '../reducers';
-import { query, pool, createJunkTable } from '../db';
+import { sequelize, User } from './sequelize';
 
 // components
 import App from '../components/App';
@@ -27,25 +26,6 @@ const io = socket(server);
 
 // Routes
 import authRoutes from './routes/authRoutes';
-
-/*server.get('/test', (req, res) => {
-    //createJunkTable();
-    //res.json({ msg: 'done' });
-    
-    query('INSERT INTO users(name) VALUES($1) RETURNING *', ['jane'], (err, result) => {
-        if (err) return res.status(400).json({ msg: JSON.stringify(err) });
-
-        return res.status(200).json({ user: result.rows[0] });
-    });
-});
-
-server.get('/:i', (req, res) => {
-    query('SELECT * FROM users WHERE id=$1', [req.params.i], (err, result) => {
-        if (err) return res.status(400).json({ msg: JSON.stringify(err) });
-
-        res.status(200).json({ msg: result.rows[0] });
-    });
-});*/
 
 app.get('/*', (req, res) => {
     const store = createStore(reducers);
@@ -75,7 +55,28 @@ app.get('/*', (req, res) => {
     `);
 });
 
-pool.connect((err, client, release) => {
+sequelize
+    .authenticate()
+    .then(() => {
+        console.log('db connected');
+
+        sequelize.sync()
+            .then(() => {
+                console.log('synced successfully');
+
+                server.listen(PORT, () => console.log(`server listening on port ${PORT}`));
+
+                io.on('connection', (sock) => {
+                    console.log('socket connected!');
+            
+                });
+            })
+    })
+    .catch(err => {
+        return console.log(err);
+    });
+
+/*pool.connect((err, client, release) => {
     if (err) return console.log(err);
 
     server.listen(PORT, () => console.log(`server listening on port ${PORT}`));
@@ -84,17 +85,17 @@ pool.connect((err, client, release) => {
     io.on('connection', (sock) => {
         console.log('socket connected!');
 
-        /*sock.on('client test', data => {
+        sock.on('client test', data => {
             console.log(`from client msg: ${data.msg}`);
         });
 
         setInterval(() => {
             sock.emit('test', { msg: 'some string' });
-        }, 10 * 1000);*/
+        }, 10 * 1000);
     });
-});
+});*/
 
 process.on('SIGINT', () => {
-    pool.end();
+    sequelize.close();
     process.exit();
 });
