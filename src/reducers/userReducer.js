@@ -21,6 +21,6 @@ export default function(state = initialState, action) {
                 allDevsAndPms: action.payload
             };
         default:
-            break;
+            return state;
     }
 }

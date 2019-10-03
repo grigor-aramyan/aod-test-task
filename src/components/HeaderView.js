@@ -93,9 +93,14 @@ class HeaderView extends Component {
                         <Tab
                             onClick={ () => this.switchView(1) }
                             label='Reports' />
-                        <Tab
-                            onClick={ () => this.switchView(2) }
-                            label='Users' />
+                        { isAuthenticated && currentUser && (currentUser.userType !== DEV_TYPE) ?
+                            <div>
+                                <Tab
+                                    onClick={ () => this.switchView(2) }
+                                    label='Users' />
+                            </div>
+                        : null
+                        }
                         <Tab
                             onClick={this.onSignout}
                             label='SignOut' />

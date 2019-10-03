@@ -46,9 +46,13 @@ class DashboardView extends Component {
                         <br />
                         <Button
                             onClick={() => window.open('/reports', '_self')}>Reports</Button>
-                        <br />
-                        <Button
-                            onClick={() => window.open('/users', '_self')}>Users</Button>
+                        { isAuthenticated && currentUser && (currentUser.userType !== DEV_TYPE) ?
+                            <div>
+                                <Button
+                                    onClick={() => window.open('/users', '_self')}>Users</Button>
+                            </div>
+                        : null
+                        }
                     </div>
                 : <NotAuthenticatedView />
                 }

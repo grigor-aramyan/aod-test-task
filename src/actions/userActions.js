@@ -14,7 +14,7 @@ export const CREATE_USER_ERROR = 'CREATE_USER_ERROR';
 export const GET_ALL_DEVS_ERROR = 'GET_ALL_DEVS_ERROR';
 export const GET_ALL_DEVS_AND_PMS_ERROR = 'GET_ALL_DEVS_AND_PMS_ERROR';
 
-export const getAllDevsAndPms = () => {
+export const getAllDevsAndPms = () => (dispatch, getState) => {
 
     axios.get(API_URI, tokenConfig(getState))
         .then(res => {
@@ -28,7 +28,7 @@ export const getAllDevsAndPms = () => {
         });
 }
 
-export const getAllDevs = () => {
+export const getAllDevs = () => (dispatch, getState) => {
     const uri = API_URI + '/devs';
 
     axios.get(uri, tokenConfig(getState))
