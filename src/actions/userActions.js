@@ -6,7 +6,8 @@ import {
     USER_CREATED,
     USER_CREATED_FROM_ADMIN,
     GET_ALL_DEVS,
-    GET_ALL_DEVS_AND_PMS
+    GET_ALL_DEVS_AND_PMS,
+    UPDATE_USER_ROLE
 } from './types';
 
 const API_URI = baseUri + '/api/users';
@@ -15,6 +16,21 @@ export const CREATE_USER_ERROR = 'CREATE_USER_ERROR';
 export const CREATE_USER_FROM_ADMIN_ERROR = 'CREATE_USER_FROM_ADMIN_ERROR';
 export const GET_ALL_DEVS_ERROR = 'GET_ALL_DEVS_ERROR';
 export const GET_ALL_DEVS_AND_PMS_ERROR = 'GET_ALL_DEVS_AND_PMS_ERROR';
+
+export const updateUserRole = (dataObject) => (dispatch, getState) => {
+    const uri = API_URI + '/role';
+
+    axios.put(uri, dataObject, tokenConfig(getState))
+        .then(res => {
+            dispatch({
+                type: UPDATE_USER_ROLE,
+                payload: res.data.user
+            });
+        })
+        .catch(err => {
+            dispatch(returnErrors(err.response.data, err.response.status));
+        });
+}
 
 export const assignTask = (dataObject) => (dispatch, getState) => {
     const uri = API_URI + '/task';
