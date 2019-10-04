@@ -59,7 +59,8 @@ router.post('/task', auth, function(req, res) {
             .then(task => {
                 const notifParams = {
                     notifType: TASK_ASSIGNED_NOTIF,
-                    taskId: task.id
+                    taskId: task.id,
+                    addressedTo: assignedTo
                 };
 
                 Notif.create(notifParams)

@@ -16,6 +16,18 @@ export const CREATE_USER_FROM_ADMIN_ERROR = 'CREATE_USER_FROM_ADMIN_ERROR';
 export const GET_ALL_DEVS_ERROR = 'GET_ALL_DEVS_ERROR';
 export const GET_ALL_DEVS_AND_PMS_ERROR = 'GET_ALL_DEVS_AND_PMS_ERROR';
 
+export const assignTask = (dataObject) => (dispatch, getState) => {
+    const uri = API_URI + '/task';
+
+    axios.post(uri, dataObject, tokenConfig(getState))
+        .then(res => {
+            // TODO send back new task data and utilize in some section
+        })
+        .catch(err => {
+            dispatch(returnErrors(err.response.data, err.response.status));
+        });
+}
+
 export const getAllDevsAndPms = () => (dispatch, getState) => {
 
     axios.get(API_URI, tokenConfig(getState))

@@ -8,7 +8,12 @@ import {
     CardContent,
     Avatar,
     Button,
-    ButtonGroup
+    ButtonGroup,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    TextField
 } from '@material-ui/core';
 
 // Components
@@ -29,7 +34,8 @@ import {
 } from '../actions/authActions';
 import {
     getAllDevs,
-    getAllDevsAndPms
+    getAllDevsAndPms,
+    assignTask
 } from '../actions/userActions';
 import AddUserView from './AddUserView';
 
@@ -60,12 +66,70 @@ class UsersView extends Component {
         }
     }
 
-    onAssignTask = (developerId) => {
-        console.log(`dev id: ${developerId}`);
+    state = {
+        assignTaskDialogOpened: false,
+        assigningTaskTo: null,
+        newTaskTitle: '',
+        newTaskContent: '',
+        addNewTaskError: ''
+    }
+
+    onAssignTaskInitiate = (developerId) => {
+        this.setState({
+            assignTaskDialogOpened: true,
+            assigningTaskTo: developerId
+        });
+    }
+
+    onSubmitNewTask = () => {
+        const {
+            newTaskTitle,
+            newTaskContent,
+            assigningTaskTo
+        } = this.state;
+
+        const {
+            currentUser
+        } = this.props;
+
+        if (!assigningTaskTo) {
+            this.setState({
+                assignTaskDialogOpened: false
+            });
+        } else if (!newTaskTitle || !newTaskContent) {
+            this.setState({
+                addNewTaskError: 'Title and Content fields are required!'
+            });
+        } else {
+            let isPm = true;
+            if (currentUser.userType === ADMIN_TYPE) {
+                isPm = false;
+            }
+
+            const body = {
+                title: newTaskTitle,
+                content: newTaskContent,
+                assignedTo: assigningTaskTo,
+                assignedFrom: currentUser.id,
+                assignedFromIsPm: isPm
+            };
+
+            this.props.assignTask(body);
+            this.setState({
+                newTaskTitle: '',
+                newTaskContent: '',
+                assignTaskDialogOpened: false,
+                addNewTaskError: ''
+            });
+        }
     }
 
     onChangeRole = (userId, userType) => {
         console.log(`user with id ${userId} assigned to role ${userType}`);
+    }
+
+    onChange = (e) => {
+        this.setState({ [e.target.name]: e.target.value });
     }
 
     render() {
@@ -75,6 +139,13 @@ class UsersView extends Component {
             allDevs,
             allDevsAndPms
         } = this.props;
+
+        const {
+            assignTaskDialogOpened,
+            newTaskTitle,
+            newTaskContent,
+            addNewTaskError
+        } = this.state;
 
         return(
             <div>
@@ -118,7 +189,7 @@ class UsersView extends Component {
                                                             }
                                                             <hr />
                                                             <Button
-                                                                onClick={ () => this.onAssignTask(d.id) }
+                                                                onClick={ () => this.onAssignTaskInitiate(d.id) }
                                                                 variant='outlined'>
                                                                 Assign Task
                                                             </Button>
@@ -221,7 +292,7 @@ class UsersView extends Component {
                                                                     <div>
                                                                         <hr />
                                                                         <Button
-                                                                            onClick={ () => this.onAssignTask(d.id) }
+                                                                            onClick={ () => this.onAssignTaskInitiate(d.id) }
                                                                             variant='outlined'>
                                                                             Assign Task
                                                                         </Button>
@@ -243,6 +314,62 @@ class UsersView extends Component {
                             : null
                             }
                         </Container>
+                        <Dialog open={assignTaskDialogOpened}
+                            onClose={ () => this.setState({
+                                assignTaskDialogOpened: false,
+                                newTaskTitle: '',
+                                newTaskContent: ''
+                            }) }>
+                            <DialogTitle>New Task</DialogTitle>
+                            <DialogContent>
+                                <TextField
+                                    name='newTaskTitle'
+                                    label="Title"
+                                    value={newTaskTitle}
+                                    onChange={this.onChange}
+                                    required
+                                    margin="normal"
+                                    style={{
+                                        width: '90%'
+                                    }}
+                                />
+                                <TextField
+                                    name='newTaskContent'
+                                    label="Content"
+                                    value={newTaskContent}
+                                    onChange={this.onChange}
+                                    required
+                                    margin="normal"
+                                    style={{
+                                        width: '90%'
+                                    }}
+                                />
+                                { addNewTaskError ?
+                                    <p
+                                        style={{
+                                            color: 'red',
+                                            fontStyle: 'italic'
+                                        }}>
+                                        { addNewTaskError }
+                                    </p>
+                                : null
+                                }
+                            </DialogContent>
+                            <DialogActions>
+                                <Button
+                                    onClick={ () => this.setState({
+                                        assignTaskDialogOpened: false,
+                                        newTaskTitle: '',
+                                        newTaskContent: ''
+                                    }) }>
+                                    Cancel
+                                </Button>
+                                <Button
+                                    onClick={this.onSubmitNewTask}>
+                                    Submit
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
                     </div>
                     : <NotAuthenticatedView />
                 }
