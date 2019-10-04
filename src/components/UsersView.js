@@ -31,6 +31,7 @@ import {
     getAllDevs,
     getAllDevsAndPms
 } from '../actions/userActions';
+import AddUserView from './AddUserView';
 
 class UsersView extends Component {
     componentDidMount() {
@@ -135,107 +136,110 @@ class UsersView extends Component {
                             : null
                             }
                             { (currentUser.userType === ADMIN_TYPE) ?
-                                ( allDevsAndPms && (allDevsAndPms.length > 0) ? 
-                                    <Grid container spacing={2} justify='center'>
-                                        { allDevsAndPms.map(d => {
-                                            let devButtonStyle = {};
-                                            let pmButtonStyle = {};
-                                            let adminButtonStyle = {};
-                                            switch (d.userType) {
-                                                case DEV_TYPE:
-                                                    devButtonStyle = {
-                                                        border: 'none',
-                                                        borderBottom: '2px solid orange',
-                                                        pointerEvents: 'none'
-                                                    };
-                                                    pmButtonStyle = {
-                                                        border: 'none'
-                                                    };
-                                                    adminButtonStyle = {
-                                                        border: 'none'
-                                                    };
-                                                    break;
-                                                case PM_TYPE:
-                                                    devButtonStyle = {
-                                                        border: 'none'
-                                                    };
-                                                    pmButtonStyle = {
-                                                        border: 'none',
-                                                        borderBottom: '2px solid orange',
-                                                        pointerEvents: 'none'
-                                                    };
-                                                    adminButtonStyle = {
-                                                        border: 'none'
-                                                    };
-                                                    break;
-                                                default:
-                                                    break;
-                                            }
+                                <div>
+                                    <AddUserView />
+                                    { allDevsAndPms && (allDevsAndPms.length > 0) ? 
+                                        <Grid container spacing={2} justify='center'>
+                                            { allDevsAndPms.map(d => {
+                                                let devButtonStyle = {};
+                                                let pmButtonStyle = {};
+                                                let adminButtonStyle = {};
+                                                switch (d.userType) {
+                                                    case DEV_TYPE:
+                                                        devButtonStyle = {
+                                                            border: 'none',
+                                                            borderBottom: '2px solid orange',
+                                                            pointerEvents: 'none'
+                                                        };
+                                                        pmButtonStyle = {
+                                                            border: 'none'
+                                                        };
+                                                        adminButtonStyle = {
+                                                            border: 'none'
+                                                        };
+                                                        break;
+                                                    case PM_TYPE:
+                                                        devButtonStyle = {
+                                                            border: 'none'
+                                                        };
+                                                        pmButtonStyle = {
+                                                            border: 'none',
+                                                            borderBottom: '2px solid orange',
+                                                            pointerEvents: 'none'
+                                                        };
+                                                        adminButtonStyle = {
+                                                            border: 'none'
+                                                        };
+                                                        break;
+                                                    default:
+                                                        break;
+                                                }
 
-                                            return(
-                                                <Grid item xs={4}>
-                                                    <Card>
-                                                        <CardContent>
-                                                            <Avatar
-                                                                style={{
-                                                                    margin: '0 auto',
-                                                                    color: 'white',
-                                                                    backgroundColor: 'orange'
-                                                                }}>A</Avatar>
-                                                            <h4>{ d.username }</h4>
-                                                            Role:
-                                                            <ButtonGroup
-                                                                style={{
-                                                                    marginLeft: '3px'
-                                                                }}
-                                                                size='small'>
-                                                                <Button
-                                                                    onClick={ () => this.onChangeRole(d.id, DEV_TYPE) }
-                                                                    style={devButtonStyle}>Developer</Button>
-                                                                <Button
-                                                                    onClick={ () => this.onChangeRole(d.id, PM_TYPE) }
-                                                                    style={pmButtonStyle}>PM</Button>
-                                                                <Button
-                                                                    onClick={ () => this.onChangeRole(d.id, ADMIN_TYPE) }
-                                                                    style={adminButtonStyle}>Admin</Button>
-                                                            </ButtonGroup>
-                                                            <span
-                                                                style={{
-                                                                    display: 'block',
-                                                                    fontStyle: 'italic',
-                                                                    color: 'grey'
-                                                                }}>{ d.email }</span>
-                                                            { d.telephone ?
+                                                return(
+                                                    <Grid item xs={4}>
+                                                        <Card>
+                                                            <CardContent>
+                                                                <Avatar
+                                                                    style={{
+                                                                        margin: '0 auto',
+                                                                        color: 'white',
+                                                                        backgroundColor: 'orange'
+                                                                    }}>A</Avatar>
+                                                                <h4>{ d.username }</h4>
+                                                                Role:
+                                                                <ButtonGroup
+                                                                    style={{
+                                                                        marginLeft: '3px'
+                                                                    }}
+                                                                    size='small'>
+                                                                    <Button
+                                                                        onClick={ () => this.onChangeRole(d.id, DEV_TYPE) }
+                                                                        style={devButtonStyle}>Developer</Button>
+                                                                    <Button
+                                                                        onClick={ () => this.onChangeRole(d.id, PM_TYPE) }
+                                                                        style={pmButtonStyle}>PM</Button>
+                                                                    <Button
+                                                                        onClick={ () => this.onChangeRole(d.id, ADMIN_TYPE) }
+                                                                        style={adminButtonStyle}>Admin</Button>
+                                                                </ButtonGroup>
                                                                 <span
                                                                     style={{
                                                                         display: 'block',
                                                                         fontStyle: 'italic',
                                                                         color: 'grey'
-                                                                    }}>Tel: { d.telephone }</span>
-                                                            : null
-                                                            }
-                                                            { (d.userType === DEV_TYPE) ?
-                                                                <div>
-                                                                    <hr />
-                                                                    <Button
-                                                                        onClick={ () => this.onAssignTask(d.id) }
-                                                                        variant='outlined'>
-                                                                        Assign Task
-                                                                    </Button>
-                                                                </div>
-                                                            : null
-                                                            }
-                                                        </CardContent>
-                                                    </Card>
-                                                </Grid>
-                                            );
-                                        }) }
-                                    </Grid>
-                                : <p
-                                    style={{
-                                        color: 'red'
-                                    }}>No developers found!</p>    
-                                )
+                                                                    }}>{ d.email }</span>
+                                                                { d.telephone ?
+                                                                    <span
+                                                                        style={{
+                                                                            display: 'block',
+                                                                            fontStyle: 'italic',
+                                                                            color: 'grey'
+                                                                        }}>Tel: { d.telephone }</span>
+                                                                : null
+                                                                }
+                                                                { (d.userType === DEV_TYPE) ?
+                                                                    <div>
+                                                                        <hr />
+                                                                        <Button
+                                                                            onClick={ () => this.onAssignTask(d.id) }
+                                                                            variant='outlined'>
+                                                                            Assign Task
+                                                                        </Button>
+                                                                    </div>
+                                                                : null
+                                                                }
+                                                            </CardContent>
+                                                        </Card>
+                                                    </Grid>
+                                                );
+                                            }) }
+                                        </Grid>
+                                    : <p
+                                        style={{
+                                            color: 'red'
+                                        }}>No developers found!</p>    
+                                    }
+                                </div>
                             : null
                             }
                         </Container>
