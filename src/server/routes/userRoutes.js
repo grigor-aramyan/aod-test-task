@@ -6,14 +6,75 @@ import Sequelize from 'sequelize';
 import auth from '../../../middleware/auth';
 
 // Models
-import { User } from '../sequelize';
+import { User, Task, Notif } from '../sequelize';
 
 import {
     DEV_TYPE,
-    PM_TYPE
+    PM_TYPE,
+    ADMIN_TYPE,
+    TASK_ASSIGNED_NOTIF
 } from '../../utils/statics';
 
 const router = express.Router();
+
+// @route POST api/users/task
+// @desc Assign task to user
+// @access Private
+router.post('/task', auth, function(req, res) {
+    const {
+        title,
+        content,
+        assignedTo,
+        assignedFrom,
+        assignedFromIsPm
+    } = req.body;
+
+    const currentUserId = req.user.id;
+
+    if (!title || !content || !assignedTo || !assignedFrom || !assignedFromIsPm) {
+        return res.status(400).json({ msg: 'All fields are required!' });
+    }
+
+    User.findOne({
+        where: {
+            id: currentUserId
+        }
+    })
+    .then(user => {
+        if (!user) return res.status(400).json({ msg: 'No user found!' });
+
+        if (user.userType !== PM_TYPE || user.userType !== ADMIN_TYPE) {
+            return res.status(400).json({ msg: 'Only PMs and admins can assign task!' });
+        }
+
+        const params = {
+            title,
+            content,
+            assignedTo,
+            assignedFrom,
+            assignedFromIsPm
+        };
+
+        Task.create(params)
+            .then(task => {
+                const notifParams = {
+                    notifType: TASK_ASSIGNED_NOTIF,
+                    taskId: task.id
+                };
+
+                Notif.create(notifParams)
+                    .then(notif => {
+                        res.status(201).json({ msg: 'created' });
+                    })
+                    .catch(err => {
+                        return res.status(500).json({ msg: 'Unable to create notif!' });
+                    });
+            })
+            .catch(err => {
+                return res.status(500).json({ msg: 'Unable to create task!' });
+            });
+    });
+});
 
 // @route GET api/users
 // @desc Get all pms and devs

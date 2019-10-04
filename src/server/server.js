@@ -7,7 +7,7 @@ import { StaticRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import reducers from '../reducers';
-import { sequelize, User } from './sequelize';
+import { sequelize } from './sequelize';
 
 // components
 import App from '../components/App';
@@ -31,27 +31,6 @@ const io = socket(server);
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-
-app.get('/3', (req, res) => {
-    const params = {
-        username: 'john',
-        email: 'mail@gmail.com',
-        telephone: '333',
-        userType: 'admin'
-    }
-    
-    User.create(params)
-        .then(newUser => {
-            res.status(201).json({
-                newUser
-            });
-        })
-        .catch(err => {
-            res.status(400).json({
-                err
-            })
-        });
-})
 
 app.get('/*', (req, res) => {
     const store = createStore(reducers);
