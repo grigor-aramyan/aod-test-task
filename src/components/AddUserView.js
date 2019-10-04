@@ -17,6 +17,11 @@ import {
     ADMIN_TYPE
 } from '../utils/statics';
 
+import {
+    addNewUserAsAdmin,
+    CREATE_USER_FROM_ADMIN_ERROR
+} from '../actions/userActions';
+
 class AddUserView extends Component {
     state = {
         username: '',
@@ -45,10 +50,7 @@ class AddUserView extends Component {
                 addNewUserError: 'Email format doesn\'t look correct!'
             });
         } else {
-            this.setState({
-                addNewUserError: ''
-            });
-
+            
             const body = {
                 username,
                 password,
@@ -57,7 +59,21 @@ class AddUserView extends Component {
                 userType
             };
 
+            this.props.addNewUserAsAdmin(body);
 
+            // in real systems this should be improved
+            // by tracking initial length of users list,
+            // saving it in state and tracking any increment
+            // in componentWillUpdate() method - when props show increment
+            // in list means new user was added, so clear this fields in state
+            this.setState({
+                username: '',
+                password: '',
+                email: '',
+                telephone: '',
+                userType: DEV_TYPE,
+                addNewUserError: ''
+            });
         }
     }
 
@@ -74,6 +90,10 @@ class AddUserView extends Component {
             userType,
             addNewUserError
         } = this.state;
+
+        const {
+            error
+        } = this.props;
 
         return (
             <Container>
@@ -160,6 +180,16 @@ class AddUserView extends Component {
                     </p>
                 : null
                 }
+                { (error.id === 'CREATE_USER_FROM_ADMIN_ERROR') ?
+                    <p
+                        style={{
+                            color: 'red',
+                            fontStyle: 'italic'
+                        }}>
+                        { error.msg.msg }
+                    </p>
+                : null
+                }
                 <Button
                     onClick={this.onAddNewUser}>
                     Submit
@@ -171,7 +201,8 @@ class AddUserView extends Component {
 }
 
 AddUserView.propTypes = {
-    error: PropTypes.object
+    error: PropTypes.object,
+    addNewUserAsAdmin: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
@@ -179,5 +210,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, {
-
+    addNewUserAsAdmin
 })(AddUserView);
