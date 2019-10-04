@@ -5,7 +5,10 @@ import {
     Container,
     Grid,
     Card,
-    CardContent
+    CardContent,
+    Avatar,
+    Button,
+    ButtonGroup
 } from '@material-ui/core';
 
 // Components
@@ -56,6 +59,14 @@ class UsersView extends Component {
         }
     }
 
+    onAssignTask = (developerId) => {
+        console.log(`dev id: ${developerId}`);
+    }
+
+    onChangeRole = (userId, userType) => {
+        console.log(`user with id ${userId} assigned to role ${userType}`);
+    }
+
     render() {
         const {
             isAuthenticated,
@@ -72,13 +83,44 @@ class UsersView extends Component {
                         <Container>
                             { (currentUser.userType === PM_TYPE) ?
                                 ( allDevs && (allDevs.length > 0) ? 
-                                    <Grid container spacing={2}>
+                                    <Grid container spacing={2} justify='center'>
                                         { allDevs.map(d => {
                                             return(
                                                 <Grid item xs={4}>
                                                     <Card>
                                                         <CardContent>
-                                                            { d.username }
+                                                            <Avatar
+                                                                style={{
+                                                                    margin: '0 auto',
+                                                                    color: 'white',
+                                                                    backgroundColor: 'orange'
+                                                                }}>A</Avatar>
+                                                            <h4>{ d.username }</h4>
+                                                            <p
+                                                                style={{
+                                                                    display: 'inline'
+                                                                }}>Role: Developer</p>
+                                                            <span
+                                                                style={{
+                                                                    display: 'block',
+                                                                    fontStyle: 'italic',
+                                                                    color: 'grey'
+                                                                }}>{ d.email }</span>
+                                                            { d.telephone ?
+                                                                <span
+                                                                    style={{
+                                                                        display: 'block',
+                                                                        fontStyle: 'italic',
+                                                                        color: 'grey'
+                                                                    }}>Tel: { d.telephone }</span>
+                                                            : null
+                                                            }
+                                                            <hr />
+                                                            <Button
+                                                                onClick={ () => this.onAssignTask(d.id) }
+                                                                variant='outlined'>
+                                                                Assign Task
+                                                            </Button>
                                                         </CardContent>
                                                     </Card>
                                                 </Grid>
@@ -94,13 +136,95 @@ class UsersView extends Component {
                             }
                             { (currentUser.userType === ADMIN_TYPE) ?
                                 ( allDevsAndPms && (allDevsAndPms.length > 0) ? 
-                                    <Grid container spacing={2}>
+                                    <Grid container spacing={2} justify='center'>
                                         { allDevsAndPms.map(d => {
+                                            let devButtonStyle = {};
+                                            let pmButtonStyle = {};
+                                            let adminButtonStyle = {};
+                                            switch (d.userType) {
+                                                case DEV_TYPE:
+                                                    devButtonStyle = {
+                                                        border: 'none',
+                                                        borderBottom: '2px solid orange',
+                                                        pointerEvents: 'none'
+                                                    };
+                                                    pmButtonStyle = {
+                                                        border: 'none'
+                                                    };
+                                                    adminButtonStyle = {
+                                                        border: 'none'
+                                                    };
+                                                    break;
+                                                case PM_TYPE:
+                                                    devButtonStyle = {
+                                                        border: 'none'
+                                                    };
+                                                    pmButtonStyle = {
+                                                        border: 'none',
+                                                        borderBottom: '2px solid orange',
+                                                        pointerEvents: 'none'
+                                                    };
+                                                    adminButtonStyle = {
+                                                        border: 'none'
+                                                    };
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
+
                                             return(
                                                 <Grid item xs={4}>
                                                     <Card>
                                                         <CardContent>
-                                                            { d.username }
+                                                            <Avatar
+                                                                style={{
+                                                                    margin: '0 auto',
+                                                                    color: 'white',
+                                                                    backgroundColor: 'orange'
+                                                                }}>A</Avatar>
+                                                            <h4>{ d.username }</h4>
+                                                            Role:
+                                                            <ButtonGroup
+                                                                style={{
+                                                                    marginLeft: '3px'
+                                                                }}
+                                                                size='small'>
+                                                                <Button
+                                                                    onClick={ () => this.onChangeRole(d.id, DEV_TYPE) }
+                                                                    style={devButtonStyle}>Developer</Button>
+                                                                <Button
+                                                                    onClick={ () => this.onChangeRole(d.id, PM_TYPE) }
+                                                                    style={pmButtonStyle}>PM</Button>
+                                                                <Button
+                                                                    onClick={ () => this.onChangeRole(d.id, ADMIN_TYPE) }
+                                                                    style={adminButtonStyle}>Admin</Button>
+                                                            </ButtonGroup>
+                                                            <span
+                                                                style={{
+                                                                    display: 'block',
+                                                                    fontStyle: 'italic',
+                                                                    color: 'grey'
+                                                                }}>{ d.email }</span>
+                                                            { d.telephone ?
+                                                                <span
+                                                                    style={{
+                                                                        display: 'block',
+                                                                        fontStyle: 'italic',
+                                                                        color: 'grey'
+                                                                    }}>Tel: { d.telephone }</span>
+                                                            : null
+                                                            }
+                                                            { (d.userType === DEV_TYPE) ?
+                                                                <div>
+                                                                    <hr />
+                                                                    <Button
+                                                                        onClick={ () => this.onAssignTask(d.id) }
+                                                                        variant='outlined'>
+                                                                        Assign Task
+                                                                    </Button>
+                                                                </div>
+                                                            : null
+                                                            }
                                                         </CardContent>
                                                     </Card>
                                                 </Grid>
