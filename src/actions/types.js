@@ -13,5 +13,6 @@ export const LOAD_LOCAL_TOKEN = 'LOAD_LOCAL_TOKEN';
 
 // User types
 export const USER_CREATED = 'USER_CREATED';
+export const USER_CREATED_FROM_ADMIN = 'USER_CREATED_FROM_ADMIN';
 export const GET_ALL_DEVS = 'GET_ALL_DEVS';
 export const GET_ALL_DEVS_AND_PMS = 'GET_ALL_DEVS_AND_PMS';
