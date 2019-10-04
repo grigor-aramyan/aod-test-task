@@ -89,7 +89,7 @@ router.post('/', function(req, res) {
         }
     })
     .then(user => {
-        if (user) return res.status(400).json({ msg: 'User already exists' });
+        if (user) return res.status(400).json({ msg: 'Username already taken' });
 
         let params = {
             username,

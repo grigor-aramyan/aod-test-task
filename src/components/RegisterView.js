@@ -17,7 +17,8 @@ import {
 } from '../utils/statics';
 
 import {
-    createUser
+    createUser,
+    CREATE_USER_ERROR
 } from '../actions/userActions';
 
 class RegisterView extends Component {
@@ -129,6 +130,10 @@ class RegisterView extends Component {
     }
 
     render() {
+        const {
+            error
+        } = this.props;
+
         const {
             userType,
             devUsername,
@@ -277,6 +282,16 @@ class RegisterView extends Component {
                     </p>
                 : null
                 }
+                { (error.id === CREATE_USER_ERROR) ?
+                    <p
+                        style={{
+                            color: 'red',
+                            fontStyle: 'italic'
+                        }}>
+                        { error.msg.msg }
+                    </p>
+                : null
+                }
                 <div>
                     <Button
                         onClick={this.onRegister}
@@ -303,11 +318,13 @@ class RegisterView extends Component {
 
 RegisterView.propTypes = {
     createUser: PropTypes.func.isRequired,
-    currentUser: PropTypes.object
+    currentUser: PropTypes.object,
+    error: PropTypes.object
 }
 
 const mapStateToProps = (state) => ({
-    currentUser: state.auth.user
+    currentUser: state.auth.user,
+    error: state.error
 });
 
 export default connect(mapStateToProps, {
