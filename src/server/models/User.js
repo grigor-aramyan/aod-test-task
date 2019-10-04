@@ -1,3 +1,4 @@
+
 export const userModel = (sequelize, type) => {
     return(
         sequelize.define('user', {

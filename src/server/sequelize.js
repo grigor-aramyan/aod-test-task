@@ -1,5 +1,6 @@
 import Sequelize from 'sequelize';
 import { userModel } from './models/User';
+import { taskModel } from './models/Task';
 
 export const sequelize = new Sequelize('aod_dev', 'aod_test', 'aod_test', {
     host: 'localhost',
@@ -13,3 +14,4 @@ export const sequelize = new Sequelize('aod_dev', 'aod_test', 'aod_test', {
 });
 
 export const User = userModel(sequelize, Sequelize);
+export const Task = taskModel(sequelize, Sequelize);
