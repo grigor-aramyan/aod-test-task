@@ -17,6 +17,56 @@ import {
 
 const router = express.Router();
 
+// @route PUT api/users/role
+// @desc Update user role
+// @access Private
+router.put('/role', auth, function(req, res) {
+    const currentUserId = req.user.id;
+
+    const {
+        userId,
+        userType
+    } = req.body;
+
+    if (!userId || !userType) return res.status(400).json({ msg: 'Inconsistent fields!' });
+
+    User.findOne({
+        where: {
+            id: currentUserId
+        }
+    })
+    .then(user => {
+        if (!user) return res.status(400).json({ msg: 'No user with this credentials!' });
+
+        if (user.userType !== ADMIN_TYPE) return res.status(400).json({ msg: 'Only admins can change roles!' });
+
+        User.update({
+            userType
+        }, {
+            where: {
+                id: userId
+            }
+        })
+        .then(user => {
+            res.status(200).json({
+                user: {
+                    id: user.id,
+                    username: user.username,
+                    email: user.email,
+                    telephone: user.telephone,
+                    userType: user.userType
+                }
+            });
+        })
+        .catch(err => {
+            return res.status(500).json({ msg: 'Something bad happened!' }); 
+        });
+    })
+    .catch(err => {
+        return res.status(500).json({ msg: 'Something wrong in our side! Contact with us, please' });
+    });
+});
+
 // @route POST api/users/task
 // @desc Assign task to user
 // @access Private

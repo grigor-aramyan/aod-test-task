@@ -115,6 +115,7 @@ class UsersView extends Component {
             };
 
             this.props.assignTask(body);
+            // TODO check on successful submition of new task before clearing below data
             this.setState({
                 newTaskTitle: '',
                 newTaskContent: '',
