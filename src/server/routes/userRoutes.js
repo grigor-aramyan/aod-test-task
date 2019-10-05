@@ -47,15 +47,25 @@ router.put('/role', auth, function(req, res) {
                 id: userId
             }
         })
-        .then(user => {
-            res.status(200).json({
-                user: {
-                    id: user.id,
-                    username: user.username,
-                    email: user.email,
-                    telephone: user.telephone,
-                    userType: user.userType
+        .then(() => {
+            User.findOne({
+                where: {
+                    id: userId
                 }
+            })
+            .then(u => {
+                res.status(200).json({
+                    user: {
+                        id: u.id,
+                        username: u.username,
+                        email: u.email,
+                        telephone: u.telephone,
+                        userType: u.userType
+                    }
+                });
+            })
+            .catch(err => {
+                return res.status(500).json({ msg: 'Something weird on our side! Contact with us, please' });
             });
         })
         .catch(err => {
@@ -81,7 +91,7 @@ router.post('/task', auth, function(req, res) {
 
     const currentUserId = req.user.id;
 
-    if (!title || !content || !assignedTo || !assignedFrom || !assignedFromIsPm) {
+    if (!title || !content || !assignedTo || !assignedFrom) {
         return res.status(400).json({ msg: 'All fields are required!' });
     }
 
@@ -93,7 +103,7 @@ router.post('/task', auth, function(req, res) {
     .then(user => {
         if (!user) return res.status(400).json({ msg: 'No user found!' });
 
-        if (user.userType !== PM_TYPE || user.userType !== ADMIN_TYPE) {
+        if (user.userType !== PM_TYPE && user.userType !== ADMIN_TYPE) {
             return res.status(400).json({ msg: 'Only PMs and admins can assign task!' });
         }
 

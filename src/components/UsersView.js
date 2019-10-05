@@ -35,7 +35,8 @@ import {
 import {
     getAllDevs,
     getAllDevsAndPms,
-    assignTask
+    assignTask,
+    updateUserRole
 } from '../actions/userActions';
 import AddUserView from './AddUserView';
 
@@ -126,7 +127,7 @@ class UsersView extends Component {
     }
 
     onChangeRole = (userId, userType) => {
-        console.log(`user with id ${userId} assigned to role ${userType}`);
+        this.props.updateUserRole({ userId, userType });
     }
 
     onChange = (e) => {
@@ -159,7 +160,7 @@ class UsersView extends Component {
                                     <Grid container spacing={2} justify='center'>
                                         { allDevs.map(d => {
                                             return(
-                                                <Grid item xs={4}>
+                                                <Grid key={d.id} item xs={4}>
                                                     <Card>
                                                         <CardContent>
                                                             <Avatar
@@ -248,7 +249,7 @@ class UsersView extends Component {
                                                 }
 
                                                 return(
-                                                    <Grid item xs={4}>
+                                                    <Grid key={d.id} item xs={4}>
                                                         <Card>
                                                             <CardContent>
                                                                 <Avatar
@@ -387,7 +388,9 @@ UsersView.propTypes = {
     getAllDevs: PropTypes.func.isRequired,
     getAllDevsAndPms: PropTypes.func.isRequired,
     allDevsAndPms: PropTypes.array.isRequired,
-    allDevs: PropTypes.array.isRequired
+    allDevs: PropTypes.array.isRequired,
+    assignTask: PropTypes.func.isRequired,
+    updateUserRole: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
@@ -401,5 +404,7 @@ export default connect(mapStateToProps, {
     loadLocalToken,
     loadUser,
     getAllDevs,
-    getAllDevsAndPms
+    getAllDevsAndPms,
+    assignTask,
+    updateUserRole
 })(UsersView);

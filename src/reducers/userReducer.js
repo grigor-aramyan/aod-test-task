@@ -18,12 +18,12 @@ const initialState = {
 export default function(state = initialState, action) {
     switch (action.type) {
         case UPDATE_USER_ROLE:
-            const updatedUser = action.paylod;
+            const updatedUser = action.payload;
 
             const intermediateAllDevs = state.allDevs;
             let updatedAllDevs = null;
             if (updatedUser.userType === ADMIN_TYPE) {
-                updatedAllDevs = state.allDevs;
+                updatedAllDevs = [...state.allDevs];
             } else if (intermediateAllDevs.length > 0) {
                 const filteredAllDevs = intermediateAllDevs.filter(d => {
                     return (d.id !== updatedUser.id);
@@ -52,7 +52,7 @@ export default function(state = initialState, action) {
                 ...state,
                 allDevs: updatedAllDevs,
                 allDevsAndPms: updatedAllDevsAndPms
-            }
+            };
         case USER_CREATED_FROM_ADMIN:
             let updatedDevsAndPms = null;
             const newUser = action.payload.user;
