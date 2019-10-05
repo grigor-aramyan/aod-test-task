@@ -22,6 +22,12 @@ import {
 import {
     getAllNotifs
 } from '../actions/notifActions';
+import {
+    getTaskById
+} from '../actions/taskActions';
+import {
+    getReportById
+} from '../actions/reportActions';
 import NotAuthenticatedView from './NotAuthenticatedView';
 
 class NotifsView extends Component {
@@ -56,18 +62,20 @@ class NotifsView extends Component {
     }
 
     onSeeReport = (reportId) => {
-        console.log('report id: ' + reportId);
+        this.props.getReportById(reportId);
     }
 
     onSeeTask = (taskId) => {
-        
+        this.props.getTaskById(taskId);
     }
 
     render() {
         const {
             isAuthenticated,
             currentUser,
-            allNotifs
+            allNotifs,
+            currentReport,
+            currentTask
         } = this.props;
 
         return(
@@ -176,17 +184,23 @@ NotifsView.propTypes = {
     currentUser: PropTypes.object,
     isAuthenticated: PropTypes.bool,
     getAllNotifs: PropTypes.func.isRequired,
-    allNotifs: PropTypes.array.isRequired
+    allNotifs: PropTypes.array.isRequired,
+    getTaskById: PropTypes.fund.isRequired,
+    getReportById: PropTypes.fund.isRequired
 }
 
 const mapStateToProps = (state) => ({
     currentUser: state.auth.user,
     isAuthenticated: state.auth.isAuthenticated,
-    allNotifs: state.notifs.allNotifs
+    allNotifs: state.notifs.allNotifs,
+    currentTask: state.tasks.currentTask,
+    currentReport: state.reports.currentReport
 });
 
 export default connect(mapStateToProps, {
     loadLocalToken,
     loadUser,
-    getAllNotifs
+    getAllNotifs,
+    getTaskById,
+    getReportById
 })(NotifsView);

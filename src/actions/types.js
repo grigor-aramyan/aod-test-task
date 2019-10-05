@@ -20,3 +20,9 @@ export const UPDATE_USER_ROLE = 'UPDATE_USER_ROLE';
 
 // Notif types
 export const GET_ALL_NOTIFS = 'GET_ALL_NOTIFS';
+
+// Report types
+export const GET_REPORT_BY_ID = 'GET_REPORT_BY_ID';
+
+// Task types
+export const GET_TASK_BY_ID = 'GET_TASK_BY_ID';
