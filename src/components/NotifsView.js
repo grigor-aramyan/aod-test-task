@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import socketIOClient from 'socket.io-client';
 import {
     Container
 } from '@material-ui/core';
+
+// Statics
+import { baseUri } from '../utils/statics';
 
 // Components
 import Header from './HeaderView';
@@ -19,6 +23,9 @@ class NotifsView extends Component {
     componentDidMount() {
         this.props.loadLocalToken();
         this.props.loadUser();
+
+        //const socket = socketIOClient(baseUri);
+
     }
 
     render() {

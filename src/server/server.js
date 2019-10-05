@@ -15,6 +15,7 @@ import App from '../components/App';
 // Router
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
+import notifRoutes from './routes/notifRoutes';
 
 const PORT = process.env.PORT || 4242;
 
@@ -31,6 +32,7 @@ const io = socket(server);
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/notifs', notifRoutes);
 
 app.get('/*', (req, res) => {
     const store = createStore(reducers);

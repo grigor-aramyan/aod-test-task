@@ -17,3 +17,6 @@ export const USER_CREATED_FROM_ADMIN = 'USER_CREATED_FROM_ADMIN';
 export const GET_ALL_DEVS = 'GET_ALL_DEVS';
 export const GET_ALL_DEVS_AND_PMS = 'GET_ALL_DEVS_AND_PMS';
 export const UPDATE_USER_ROLE = 'UPDATE_USER_ROLE';
+
+// Notif types
+export const GET_ALL_NOTIFS = 'GET_ALL_NOTIFS';
