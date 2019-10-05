@@ -3,11 +3,13 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import socketIOClient from 'socket.io-client';
 import {
-    Container
+    Container,
+    Grid,
+    Button
 } from '@material-ui/core';
 
 // Statics
-import { baseUri } from '../utils/statics';
+import { baseUri, REPORT_ACCEPTED_NOTIF, REPORT_REJECTED_NOTIF, DEV_REPORTED_NOTIF, ADMIN_TYPE, PM_TYPE, TASK_ASSIGNED_NOTIF, DEV_TYPE } from '../utils/statics';
 
 // Components
 import Header from './HeaderView';
@@ -53,6 +55,14 @@ class NotifsView extends Component {
         getNotifsInitial: false
     }
 
+    onSeeReport = (reportId) => {
+        console.log('report id: ' + reportId);
+    }
+
+    onSeeTask = (taskId) => {
+        
+    }
+
     render() {
         const {
             isAuthenticated,
@@ -66,7 +76,91 @@ class NotifsView extends Component {
                     <div>
                         <Header />
                         <Container>
-                            notifs count: { allNotifs ? allNotifs.length : 0 }
+                            { (allNotifs.length > 0) ?
+                                <div>
+                                    <Grid container spacing={2}
+                                        style={{
+                                            fontStyle: 'italic'
+                                        }}>
+                                        <Grid item xs={2}>
+                                            * ID *
+                                        </Grid>
+                                        <Grid item xs={2}>
+                                            * TASK ID *
+                                        </Grid>
+                                        <Grid item xs={2}>
+                                            * REPORT ID *
+                                        </Grid>
+                                        <Grid item xs={2}>
+                                            * ADDRESSED TO DEV *
+                                        </Grid>
+                                        <Grid item xs={2}>
+                                            * ACTION *
+                                        </Grid>
+                                    </Grid>
+                                    <hr />
+                                    { allNotifs.map(n => {
+                                        let itemStyle = null;
+                                        if (n.seen) {
+                                            itemStyle = {
+                                                textAlign: 'center',
+                                                color: 'grey'
+                                            }
+                                        } else {
+                                            itemStyle = {
+                                                textAlign: 'center'
+                                            }
+                                        }
+
+                                        if (n.notifType === REPORT_ACCEPTED_NOTIF) {
+                                            itemStyle.borderLeft = '1px solid green',
+                                            itemStyle.borderRight = '1px solid green',
+                                            itemStyle.color = 'green',
+                                            itemStyle.textDecoration = 'underline'
+                                        } else if (n.notifType === REPORT_REJECTED_NOTIF) {
+                                            itemStyle.borderLeft = '1px solid red',
+                                            itemStyle.borderRight = '1px solid red',
+                                            itemStyle.color = 'red',
+                                            itemStyle.textDecoration = 'underline'
+                                        }
+
+                                        return (
+                                            <Grid container key={n.id}
+                                                style={ itemStyle }>
+                                                <Grid item xs={2}>
+                                                    { n.id }
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    { n.taskId ? n.taskId : '0' }
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    { n.reportId ? n.reportId : '0' }
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    { n.addressedTo ? n.addressedTo : '0' }
+                                                </Grid>
+                                                <Grid item xs={2}>
+                                                    { ((n.notifType === DEV_REPORTED_NOTIF) && currentUser && ((currentUser.userType === ADMIN_TYPE) || (currentUser.userType === PM_TYPE))) ?
+                                                        <Button
+                                                            onClick={ () => this.onSeeReport(n.reportId) } >
+                                                            See report
+                                                        </Button>
+                                                    : null
+                                                    }
+                                                    { ((n.notifType === TASK_ASSIGNED_NOTIF) && currentUser && (currentUser.userType === DEV_TYPE) && (n.addressedTo === currentUser.id)) ?
+                                                        <Button
+                                                            onClick={ () => this.onSeeTask(n.taskId) } >
+                                                            See task
+                                                        </Button>
+                                                    : null
+                                                    }
+                                                </Grid>
+                                            </Grid>
+                                        );
+                                    }) }
+                                </div>
+                            : <p>You have 0 notifs yet!</p>
+                            }
                         </Container>
                     </div>
                 : <NotAuthenticatedView />

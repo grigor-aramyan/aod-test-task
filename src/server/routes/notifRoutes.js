@@ -35,8 +35,9 @@ router.get('/', auth, function(req, res) {
                 .then(notifs => {
                     const mappedNotifs = notifs.map(n => {
                         return {
-                            notifId: n.id,
+                            id: n.id,
                             notifType: n.notifType,
+                            taskId: n.taskId,
                             reportId: n.reportId,
                             addressedTo: n.addressedTo,
                             seen: n.seen
