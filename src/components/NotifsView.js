@@ -5,7 +5,13 @@ import socketIOClient from 'socket.io-client';
 import {
     Container,
     Grid,
-    Button
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    DialogContentText,
+    TextField
 } from '@material-ui/core';
 
 // Statics
@@ -58,15 +64,73 @@ class NotifsView extends Component {
     }
 
     state = {
-        getNotifsInitial: false
+        getNotifsInitial: false,
+        reportDialogOpened: false,
+        taskDialogOpened: false,
+        body: '',
+        estimationTime: 0,
+        spentTime: 0,
+        reportingError: ''
     }
 
     onSeeReport = (reportId) => {
         this.props.getReportById(reportId);
+        this.setState({
+            reportDialogOpened: true
+        });
     }
 
     onSeeTask = (taskId) => {
         this.props.getTaskById(taskId);
+        this.setState({
+            taskDialogOpened: true
+        });
+    }
+
+    onActionReport = (actionCode) => {
+        // actionCode: 0 - reject, 1 - accept
+
+        this.setState({
+            reportDialogOpened: false
+        })
+    }
+
+    onReport = () => {
+        const {
+            body,
+            estimationTime,
+            spentTime
+        } = this.state;
+
+        const {
+            currentTask
+        } = this.props;
+
+        if (!body || !estimationTime || !spentTime) {
+            this.setState({
+                reportingError: 'All fields required!'
+            });
+        } else {
+            const params = {
+                body,
+                taskId: currentTask.id,
+                estimationTime,
+                spentTime
+            };
+
+
+
+            this.setState({
+                taskDialogOpened: false,
+                body: '',
+                estimationTime: 0,
+                spentTime: 0
+            });
+        }
+    }
+
+    onChange = (e) => {
+        this.setState({ [e.target.name]: e.target.value });
     }
 
     render() {
@@ -77,6 +141,15 @@ class NotifsView extends Component {
             currentReport,
             currentTask
         } = this.props;
+
+        const {
+            reportDialogOpened,
+            taskDialogOpened,
+            body,
+            estimationTime,
+            spentTime,
+            reportingError
+        } = this.state;
 
         return(
             <div>
@@ -162,6 +235,13 @@ class NotifsView extends Component {
                                                         </Button>
                                                     : null
                                                     }
+                                                    { ((n.notifType === REPORT_REJECTED_NOTIF) && currentUser && (currentUser.userType === DEV_TYPE) && (n.addressedTo === currentUser.id)) ?
+                                                        <Button
+                                                            onClick={ () => this.onSeeTask(n.taskId) } >
+                                                            See task
+                                                        </Button>
+                                                    : null
+                                                    }
                                                 </Grid>
                                             </Grid>
                                         );
@@ -169,6 +249,91 @@ class NotifsView extends Component {
                                 </div>
                             : <p>You have 0 notifs yet!</p>
                             }
+                            <Dialog open={reportDialogOpened} onClose={ () => { this.setState({ reportDialogOpened: false })}}>
+                                <DialogTitle>
+                                    Report for task #{ currentReport.taskId ? currentReport.taskId : '' }
+                                </DialogTitle>
+                                <DialogContent>
+                                    <DialogContentText>
+                                        { currentReport ? currentReport.body : '' }
+                                    </DialogContentText>
+                                    <DialogContentText>
+                                        Estimation time: { currentReport ? currentReport.estimationTime : '0' }
+                                        { <br /> }
+                                        Spent time: { currentReport ? currentReport.spentTime : '0' }
+                                    </DialogContentText>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={ () => this.onActionReport(0) }>
+                                        Reject Report
+                                    </Button>
+                                    <Button onClick={ () => this.onActionReport(1) }>
+                                        Accept Report
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
+                            <Dialog open={taskDialogOpened} onClose={ () => { this.setState({ taskDialogOpened: false })}}>
+                                <DialogTitle>
+                                    { currentTask ? currentTask.title : '' }
+                                </DialogTitle>
+                                <DialogContent>
+                                    <DialogContentText>
+                                        { currentTask ? currentTask.content : '' }
+                                    </DialogContentText>
+                                    Report
+                                    <TextField
+                                        name='body'
+                                        label="Report content..."
+                                        value={body}
+                                        onChange={this.onChange}
+                                        type='text'
+                                        required
+                                        style={{
+                                            width: '100%'
+                                        }}
+                                    />
+                                    <TextField
+                                        name='estimationTime'
+                                        label="Estimation time"
+                                        value={estimationTime}
+                                        onChange={this.onChange}
+                                        type='number'
+                                        required
+                                        style={{
+                                            width: '30%'
+                                        }}
+                                    />
+                                    <TextField
+                                        name='spentTime'
+                                        label="Spent time"
+                                        value={spentTime}
+                                        onChange={this.onChange}
+                                        type='number'
+                                        required
+                                        style={{
+                                            width: '30%'
+                                        }}
+                                    />
+                                </DialogContent>
+                                { reportingError ?
+                                    <p
+                                        style={{
+                                            color: 'red',
+                                            fontStyle: 'italic'
+                                        }}>
+                                        { reportingError }
+                                    </p>
+                                : null
+                                }
+                                <DialogActions>
+                                    <Button onClick={ () => this.setState({ taskDialogOpened: false }) }>
+                                        Cancel
+                                    </Button>
+                                    <Button onClick={ () => this.onReport() }>
+                                        Report
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
                         </Container>
                     </div>
                 : <NotAuthenticatedView />

@@ -16,6 +16,51 @@ import {
 
 const router = express.Router();
 
+// @route POST api/reports
+// @desc Post new report
+// @access Private
+router.post('/', auth, function(req, res) {
+    const currentUserId = req.user.id;
+    
+    const {
+        body,
+        taskId,
+        estimationTime,
+        spentTime
+    } = req.body;
+
+    const reportParams = {
+        body,
+        taskId,
+        estimationTime,
+        spentTime
+    };
+
+    User.findOne({
+        where: {
+            id: currentUserId
+        }
+    })
+    .then(u => {
+        if (u.userType === DEV_TYPE) {
+            Report.create(reportParams)
+                .then(r => {
+                    res.status(201).json({
+                        report: r
+                    });
+                })
+                .catch(err => {
+                    return res.status(500).json({ msg: 'Can\'t save report! Contact with us, please!' });
+                });
+        } else {
+            return res.status(400).json({ msg: 'Only devs can report!' });
+        }
+    })
+    .catch(err => {
+        return res.status(500).json({ msg: 'Weird error! Contact with us, please!' });
+    });
+});
+
 // @route GET api/reports/:id
 // @desc Get report by id
 // @access Private
