@@ -5,10 +5,24 @@ import { baseUri } from '../utils/statics';
 import {
     GET_REPORT_BY_ID,
     CREATE_REPORT,
-    UPDATE_REPORT
+    UPDATE_REPORT,
+    GET_REPORTS
 } from './types';
 
 const API_URI = baseUri + '/api/reports';
+
+export const getAllReports = () => (dispatch, getState) => {
+    axios.get(API_URI, tokenConfig(getState))
+        .then(res => {
+            dispatch({
+                type: GET_REPORTS,
+                payload: res.data.reports
+            });
+        })
+        .catch(err => {
+            dispatch(returnErrors(err.response.data, err.response.status));
+        });
+}
 
 export const acceptRejectReport = (dataObject) => (dispatch, getState) => {
     axios.put(API_URI, dataObject, tokenConfig(getState))

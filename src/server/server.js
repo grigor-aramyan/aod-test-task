@@ -16,6 +16,8 @@ import App from '../components/App';
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
 import notifRoutes from './routes/notifRoutes';
+import reportRoutes from './routes/reportRoutes';
+import taskRoutes from './routes/taskRoutes';
 
 const PORT = process.env.PORT || 4242;
 
@@ -25,7 +27,6 @@ app.use(express.json());
 app.use(express.static('dist'));
 
 const server = http.createServer(app);
-//const server = new Server(app);
 
 const io = socket(server);
 
@@ -33,6 +34,8 @@ const io = socket(server);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/notifs', notifRoutes);
+app.use('/api/tasks', taskRoutes);
+app.use('/api/reports', reportRoutes);
 
 app.get('/*', (req, res) => {
     const store = createStore(reducers);
@@ -77,7 +80,8 @@ sequelize
 
                 io.on('connection', (sock) => {
                     console.log('socket connected!');
-            
+                    
+                    // TODO find ways to route socket messages in separate files like regular routes
                 });
             })
     })

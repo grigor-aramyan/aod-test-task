@@ -15,7 +15,16 @@ import {
 } from '@material-ui/core';
 
 // Statics
-import { baseUri, REPORT_ACCEPTED_NOTIF, REPORT_REJECTED_NOTIF, DEV_REPORTED_NOTIF, ADMIN_TYPE, PM_TYPE, TASK_ASSIGNED_NOTIF, DEV_TYPE } from '../utils/statics';
+import { 
+    baseUri,
+    REPORT_ACCEPTED_NOTIF,
+    REPORT_REJECTED_NOTIF,
+    DEV_REPORTED_NOTIF,
+    ADMIN_TYPE,
+    PM_TYPE,
+    TASK_ASSIGNED_NOTIF,
+    DEV_TYPE
+} from '../utils/statics';
 
 // Components
 import Header from './HeaderView';
@@ -43,8 +52,10 @@ class NotifsView extends Component {
         this.props.loadLocalToken();
         this.props.loadUser();
 
-        //const socket = socketIOClient(baseUri);
-
+        const socket = socketIOClient(baseUri);
+        socket.on('new_notif', data => {
+            // TODO check new notifs with socket and add to notifs list through redux if appropriate
+        });
     }
 
     componentDidUpdate() {

@@ -25,6 +25,7 @@ export const GET_ALL_NOTIFS = 'GET_ALL_NOTIFS';
 export const GET_REPORT_BY_ID = 'GET_REPORT_BY_ID';
 export const CREATE_REPORT = 'CREATE_REPORT';
 export const UPDATE_REPORT = 'UPDATE_REPORT';
+export const GET_REPORTS = 'GET_REPORTS';
 
 // Task types
 export const GET_TASK_BY_ID = 'GET_TASK_BY_ID';

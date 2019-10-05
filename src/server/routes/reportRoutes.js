@@ -18,6 +18,38 @@ import {
 
 const router = express.Router();
 
+// @route GET api/reports
+// @desc Get all reports
+// @access Private
+router.get('/', auth, function(req, res) {
+    const currentUserId = req.user.id;
+
+    User.findOne({
+        where: {
+            id: currentUserId
+        }
+    })
+    .then(u => {
+        if (!u) return res.status(400).json({ msg: 'Only authenticated users can access this data' });
+
+        // TODO check user type and customize output
+        // based on that and reports, tasks (future) addressed to fields
+
+        Report.findAll()
+            .then(reports => {
+                res.status(200).json({
+                    reports
+                });
+            })
+            .catch(err => {
+                return res.status(500).json({ msg: 'Try later, please!' });
+            });
+    })
+    .catch(err => {
+        return res.status(400).json({ msg: 'Try later, please!' });
+    });
+});
+
 // @route PUT api/reports
 // @desc Update report by given id
 // @access Private
