@@ -17,6 +17,9 @@ import {
     loadLocalToken,
     loadUser
 } from '../actions/authActions';
+import {
+    getAllNotifs
+} from '../actions/notifActions';
 import NotAuthenticatedView from './NotAuthenticatedView';
 
 class NotifsView extends Component {
@@ -28,10 +31,33 @@ class NotifsView extends Component {
 
     }
 
-    render() {
+    componentDidUpdate() {
         const {
             isAuthenticated,
             currentUser
+        } = this.props;
+
+        const {
+            getNotifsInitial
+        } = this.state;
+
+        if (isAuthenticated && currentUser && !getNotifsInitial) {
+            this.props.getAllNotifs();
+            this.setState({
+                getNotifsInitial: true
+            });
+        }
+    }
+
+    state = {
+        getNotifsInitial: false
+    }
+
+    render() {
+        const {
+            isAuthenticated,
+            currentUser,
+            allNotifs
         } = this.props;
 
         return(
@@ -40,7 +66,7 @@ class NotifsView extends Component {
                     <div>
                         <Header />
                         <Container>
-                            notifs will go here
+                            notifs count: { allNotifs ? allNotifs.length : 0 }
                         </Container>
                     </div>
                 : <NotAuthenticatedView />
@@ -54,15 +80,19 @@ NotifsView.propTypes = {
     loadLocalToken: PropTypes.func.isRequired,
     loadUser: PropTypes.func.isRequired,
     currentUser: PropTypes.object,
-    isAuthenticated: PropTypes.bool
+    isAuthenticated: PropTypes.bool,
+    getAllNotifs: PropTypes.func.isRequired,
+    allNotifs: PropTypes.array.isRequired
 }
 
 const mapStateToProps = (state) => ({
     currentUser: state.auth.user,
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
+    allNotifs: state.notifs.allNotifs
 });
 
 export default connect(mapStateToProps, {
     loadLocalToken,
-    loadUser
+    loadUser,
+    getAllNotifs
 })(NotifsView);
