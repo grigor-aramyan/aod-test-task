@@ -32,7 +32,9 @@ import {
     getTaskById
 } from '../actions/taskActions';
 import {
-    getReportById
+    getReportById,
+    createReport,
+    acceptRejectReport
 } from '../actions/reportActions';
 import NotAuthenticatedView from './NotAuthenticatedView';
 
@@ -92,7 +94,14 @@ class NotifsView extends Component {
 
         this.setState({
             reportDialogOpened: false
-        })
+        });
+
+        const params = {
+            reportId: this.props.currentReport.id,
+            actionCode
+        };
+
+        this.props.acceptRejectReport(params);
     }
 
     onReport = () => {
@@ -118,7 +127,7 @@ class NotifsView extends Component {
                 spentTime
             };
 
-
+            this.props.createReport(params);
 
             this.setState({
                 taskDialogOpened: false,
@@ -351,7 +360,9 @@ NotifsView.propTypes = {
     getAllNotifs: PropTypes.func.isRequired,
     allNotifs: PropTypes.array.isRequired,
     getTaskById: PropTypes.fund.isRequired,
-    getReportById: PropTypes.fund.isRequired
+    getReportById: PropTypes.func.isRequired,
+    createReport: PropTypes.func.isRequired,
+    acceptRejectReport: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
@@ -367,5 +378,7 @@ export default connect(mapStateToProps, {
     loadUser,
     getAllNotifs,
     getTaskById,
-    getReportById
+    getReportById,
+    createReport,
+    acceptRejectReport
 })(NotifsView);

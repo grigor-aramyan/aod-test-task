@@ -3,10 +3,32 @@ import { returnErrors } from './errorActions';
 import { tokenConfig } from './authActions';
 import { baseUri } from '../utils/statics';
 import {
-    GET_REPORT_BY_ID
+    GET_REPORT_BY_ID,
+    CREATE_REPORT,
+    UPDATE_REPORT
 } from './types';
 
 const API_URI = baseUri + '/api/reports';
+
+export const acceptRejectReport = (dataObject) => (dispatch, getState) => {
+    axios.put(API_URI, dataObject, tokenConfig(getState))
+        .then(res => {
+            // TODO get updated data from sockets
+        })
+        .catch(err => {
+            dispatch(returnErrors(err.response.data, err.response.status));
+        });
+}
+
+export const createReport = (dataObject) => (dispatch, getState) => {
+    axios.post(API_URI, dataObject, tokenConfig(getState))
+        .then(res => {
+            // TODO get updated data from sockets
+        })
+        .catch(err => {
+            dispatch(returnErrors(err.response.data, err.response.status));
+        });
+}
 
 export const getReportById = (reportId) => (dispatch, getState) => {
     const uri = API_URI + `/${reportId}`;

@@ -11,10 +11,62 @@ import {
     TASK_ASSIGNED_NOTIF,
     DEV_REPORTED_NOTIF,
     REPORT_ACCEPTED_NOTIF,
-    REPORT_REJECTED_NOTIF
+    REPORT_REJECTED_NOTIF,
+    REJECTED_REPORT,
+    ACCEPTED_REPORT
 } from '../../utils/statics';
 
 const router = express.Router();
+
+// @route PUT api/reports
+// @desc Update report by given id
+// @access Private
+router.put('/', auth, function(req, res) {
+    const currentUserId = req.user.id;
+
+    const {
+        reportId,
+        actionCode
+    } = req.body;
+
+    // actionCode, 0 - report rejected, 1 - report accepted
+    User.findOne({
+        where: {
+            id: currentUserId
+        }
+    })
+    .then(u => {
+        if ((u.userType !== ADMIN_TYPE) && (u.userType !== PM_TYPE)) {
+            return res.status(400).json({ msg: 'Only admins and pms can reject or accept reports!' });
+        }
+
+        let status = null;
+        if (actionCode === 0) {
+            status = REJECTED_REPORT;
+        } else if (actionCode === 1) {
+            status = ACCEPTED_REPORT;
+        }
+
+        Report.update({
+            status
+        }, {
+            where: {
+                id: reportId
+            }
+        })
+        .then(r => {
+
+            // TODO return more robust data
+            return res.status(200).json({ msg: 'Success' });
+        })
+        .catch(err => {
+            return res.status(500).json({ msg: 'Error on our side! Contact with us, please!' });
+        });
+    })
+    .catch(err => {
+        return res.status(500).json({ msg: 'Something weird on our part! Contact with us, please' });
+    });
+});
 
 // @route POST api/reports
 // @desc Post new report
